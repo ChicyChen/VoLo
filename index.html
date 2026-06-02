@@ -91,49 +91,9 @@
                 actions and tool calls is important in a physical world that does not pause for reasoning. We refer to
                 this setting as <strong>Physical Orchestration</strong>, and propose <strong>VoLoAgent</strong>, a VLM
                 that plans, monitors, and recovers by treating a VLA/WAM as an interruptible tool it steers mid-rollout
-                alongside vision models and action primitives.
-            </p>
-            <p>
-                To evaluate these long-horizon capabilities, we introduce <strong>RoboVoLo</strong>, a high-fidelity
-                benchmark for open-vocabulary long-horizon manipulation across common sense, memory/state tracking,
-                complex references, and world knowledge, with both task-level success and failure-mode diagnostics.
-                Experiments show VoLoAgent substantially outperforms single VLA/VLM or tool-based systems, with
+                alongside vision models and action primitives. To evaluate these long-horizon capabilities, we introduce <strong>RoboVoLo</strong>, a high-fidelity benchmark for open-vocabulary long-horizon manipulation across common sense, memory/state tracking, complex references, and world knowledge, with both task-level success and failure-mode diagnostics. Experiments show VoLoAgent substantially outperforms single VLA/VLM or tool-based systems, with
                 validation on real-robot experiments.
             </p>
-        </div>
-    </section>
-
-    <section class="figure-section">
-        <div class="container">
-            <h2>Demos</h2>
-            <p class="caption">VoLoAgent executing long-horizon, open-vocabulary tasks in simulation. Annotations show
-                the active subgoal and recovery events.</p>
-            <div class="video-gallery">
-                <div class="video-card">
-                    <video controls muted loop playsinline preload="metadata">
-                        <source src="assets/demo_five_fruits.mp4" type="video/mp4">
-                    </video>
-                    <p class="vcap">"Put the second and the fourth fruit from the left onto the cutting board." (Complex References &ndash; Order)</p>
-                </div>
-                <div class="video-card">
-                    <video controls muted loop playsinline preload="metadata">
-                        <source src="assets/demo_reverse_stack.mp4" type="video/mp4">
-                    </video>
-                    <p class="vcap">"Reverse the stacking order of the three colored blocks." (Memory &ndash; Order)</p>
-                </div>
-                <div class="video-card">
-                    <video controls muted loop playsinline preload="metadata">
-                        <source src="assets/demo_stack_blocks.mp4" type="video/mp4">
-                    </video>
-                    <p class="vcap">"Stack the blocks from bottom to top: red, blue, green, yellow." (Memory)</p>
-                </div>
-                <div class="video-card">
-                    <video controls muted loop playsinline preload="metadata">
-                        <source src="assets/demo_apple_yogurt.mp4" type="video/mp4">
-                    </video>
-                    <p class="vcap">"Put the apple and yogurt in the bowl." (Common Sense)</p>
-                </div>
-            </div>
         </div>
     </section>
 
