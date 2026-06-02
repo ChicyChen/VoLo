@@ -1,0 +1,5 @@
+# OS files
+.DS_Store
+
+# Source build materials (not part of the published website)
+*.pptx

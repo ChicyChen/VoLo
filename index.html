@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoLo: A Physical Orchestrator for Open-Vocabulary Long-Horizon Manipulation</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="VoLo: A Physical Orchestrator for Open-Vocabulary Long-Horizon Manipulation">
+    <meta name="description" content="VoLo is a physical orchestrator: a VLM agent that plans, monitors, and recovers by treating a VLA/WAM as an interruptible tool alongside perception models and grasp/place primitives. We also introduce RoboVoLo, a high-fidelity benchmark for open-vocabulary long-horizon manipulation.">
+    <meta name="keywords" content="robot manipulation, vision language models, VLA, physical orchestration, long-horizon manipulation, open-vocabulary, benchmark, NVIDIA">
+    <meta name="author" content="Siyi Chen, Hugo Hadfield, Alex Zook, Mikaela Angelina Uy, Chan Hee Song, Erwin Coumans, Xuning Yang, Faisal Ladhak, Qing Qu, Stan Birchfield, Jonathan Tremblay, Valts Blukis">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="VoLo: A Physical Orchestrator for Open-Vocabulary Long-Horizon Manipulation">
+    <meta property="og:description" content="A VLM-managed closed loop that orchestrates a VLA/WAM, perception models, and grasp/place primitives as interruptible tools for open-vocabulary long-horizon manipulation.">
+    <meta property="og:image" content="assets/teaser.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="VoLo: A Physical Orchestrator for Open-Vocabulary Long-Horizon Manipulation">
+    <meta name="twitter:description" content="A VLM-managed closed loop that orchestrates a VLA/WAM, perception models, and grasp/place primitives as interruptible tools.">
+    <meta name="twitter:image" content="assets/teaser.png">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1><span class="accent">VoLo</span>: A Physical Orchestrator for<br>Open-Vocabulary Long-Horizon Manipulation</h1>
+            <div class="authors">
+                <span class="author">Siyi Chen<sup>1,2,*</sup></span>
+                <span class="author">Hugo Hadfield<sup>1</sup></span>
+                <span class="author">Alex Zook<sup>1</sup></span>
+                <span class="author">Mikaela Angelina Uy<sup>1</sup></span>
+                <span class="author">Chan Hee Song<sup>1</sup></span>
+                <span class="author">Erwin Coumans<sup>1</sup></span>
+                <span class="author">Xuning Yang<sup>1</sup></span>
+                <span class="author">Faisal Ladhak<sup>1</sup></span>
+                <span class="author">Qing Qu<sup>2</sup></span>
+                <span class="author">Stan Birchfield<sup>1</sup></span>
+                <span class="author">Jonathan Tremblay<sup>1,&dagger;</sup></span>
+                <span class="author">Valts Blukis<sup>1,&dagger;</sup></span>
+            </div>
+            <div class="affiliations">
+                <span class="affiliation"><sup>1</sup>NVIDIA</span>
+                <span class="affiliation"><sup>2</sup>University of Michigan</span>
+                <span class="note"><sup>&dagger;</sup>Project Leads &nbsp;&nbsp; <sup>*</sup>Work done during an internship at NVIDIA</span>
+            </div>
+            <div class="links">
+                <span class="btn disabled">Paper (Coming Soon)</span>
+                <span class="btn disabled">arXiv (Coming Soon)</span>
+                <span class="btn disabled">Code (Coming Soon)</span>
+            </div>
+            <div class="tldr">
+                <p><strong>TL;DR:</strong> We frame open-vocabulary long-horizon manipulation as
+                    <strong>physical orchestration</strong> and present <strong>VoLoAgent</strong>, a VLM agent that
+                    plans, monitors, and recovers by steering a VLA/WAM as an <strong>interruptible tool</strong>
+                    alongside perception models and grasp/place primitives. We also introduce
+                    <strong>RoboVoLo</strong>, a high-fidelity benchmark of 126 tasks across common sense, memory,
+                    complex references, and world knowledge, with task-level success and failure-mode diagnostics.</p>
+            </div>
+        </div>
+    </header>
+
+    <section class="teaser">
+        <div class="container">
+            <img src="assets/teaser.png" alt="VoLo overview" class="teaser-img">
+            <p class="caption"><strong>VoLo overview.</strong> <strong>VoLoAgent</strong> plans, monitors
+                (e.g., subgoal complete), and uses tools (e.g., VLA, SAM3) to act and recover from failures
+                (e.g., wrong object). <strong>RoboVoLo</strong> is a high-fidelity benchmark for evaluating and
+                diagnosing open-vocabulary long-horizon manipulation.</p>
+        </div>
+    </section>
+
+    <section class="abstract">
+        <div class="container">
+            <h2>Abstract</h2>
+            <p>
+                Open-vocabulary long-horizon manipulation requires robots to reason over flexible instructions and
+                complex multi-object scenes while adaptively planning, executing, monitoring, and recovering from
+                failures. We address these demands with a closed agent loop in which a VLM orchestrates heterogeneous
+                robot capabilities as interruptible tools. Unlike in virtual AI agents, the timing of decisions,
+                actions and tool calls is important in a physical world that does not pause for reasoning. We refer to
+                this setting as <strong>Physical Orchestration</strong>, and propose <strong>VoLoAgent</strong>, a VLM
+                that plans, monitors, and recovers by treating a VLA/WAM as an interruptible tool it steers mid-rollout
+                alongside vision models and action primitives.
+            </p>
+            <p>
+                To evaluate these long-horizon capabilities, we introduce <strong>RoboVoLo</strong>, a high-fidelity
+                benchmark for open-vocabulary long-horizon manipulation across common sense, memory/state tracking,
+                complex references, and world knowledge, with both task-level success and failure-mode diagnostics.
+                Experiments show VoLoAgent substantially outperforms single VLA/VLM or tool-based systems, with
+                validation on real-robot experiments.
+            </p>
+        </div>
+    </section>
+
+    <section class="figure-section">
+        <div class="container">
+            <h2>Demos</h2>
+            <p class="caption">VoLoAgent executing long-horizon, open-vocabulary tasks in simulation. Annotations show
+                the active subgoal and recovery events.</p>
+            <div class="video-gallery">
+                <div class="video-card">
+                    <video controls muted loop playsinline preload="metadata">
+                        <source src="assets/demo_five_fruits.mp4" type="video/mp4">
+                    </video>
+                    <p class="vcap">"Put the second and the fourth fruit from the left onto the cutting board." (Complex References &ndash; Order)</p>
+                </div>
+                <div class="video-card">
+                    <video controls muted loop playsinline preload="metadata">
+                        <source src="assets/demo_reverse_stack.mp4" type="video/mp4">
+                    </video>
+                    <p class="vcap">"Reverse the stacking order of the three colored blocks." (Memory &ndash; Order)</p>
+                </div>
+                <div class="video-card">
+                    <video controls muted loop playsinline preload="metadata">
+                        <source src="assets/demo_stack_blocks.mp4" type="video/mp4">
+                    </video>
+                    <p class="vcap">"Stack the blocks from bottom to top: red, blue, green, yellow." (Memory)</p>
+                </div>
+                <div class="video-card">
+                    <video controls muted loop playsinline preload="metadata">
+                        <source src="assets/demo_apple_yogurt.mp4" type="video/mp4">
+                    </video>
+                    <p class="vcap">"Put the apple and yogurt in the bowl." (Common Sense)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="figure-section">
+        <div class="container">
+            <h2>RoboVoLo Benchmark</h2>
+            <img src="assets/benchmark.png" alt="RoboVoLo benchmark taxonomy" class="full-img">
+            <p class="caption"><strong>RoboVoLo benchmark.</strong> 126 long-horizon manipulation tasks across 15
+                categories, grouped into four capability suites: <strong>Common Sense</strong> (infer intent from scene
+                context), <strong>Memory</strong> (track state across actions), <strong>Complex References</strong>
+                (resolve spatial, ordinal, size, and negation cues), and <strong>World Knowledge</strong> (apply
+                external knowledge spanning math, art, chemistry, and recycling). Built on RoboLab and NVIDIA Isaac
+                Lab, expanded with 501 new objects.</p>
+        </div>
+    </section>
+
+    <section class="approach">
+        <div class="container">
+            <h2>VoLoAgent &amp; Physical Orchestration</h2>
+
+            <div class="approach-subsection">
+                <h3>Physical Orchestration</h3>
+                <p>
+                    Virtual AI agents assume a world that holds still while the agent thinks, whereas a physical agent
+                    must reason while the world keeps moving. This imposes a core <strong>monitor&ndash;halt&ndash;redirect</strong>
+                    requirement: the agent must monitor for divergence between what it believes it accomplished and the
+                    actual scene, halt an in-flight action as quickly as possible when divergence is detected, and
+                    redirect by replanning, reissuing the action, or switching tools.
+                </p>
+            </div>
+
+            <div class="approach-subsection">
+                <h3>The VoLoAgent System</h3>
+                <img src="assets/system.png" alt="VoLoAgent system diagram" class="full-img">
+                <p class="caption"><strong>VoLoAgent system.</strong> A single VLM agent plans, monitors, and
+                    orchestrates tools (VLA/WAM rollouts, perception models, grasp/place primitives) through one
+                    closed-loop control law. The agent can interrupt a VLA rollout and switch to a different tool when
+                    execution drifts.</p>
+                <p>
+                    Unlike prior hierarchical systems that split control between a VLM planner and a VLA executor, here
+                    the VLA is one callable tool alongside perception models and grasp/place primitives. VoLoAgent
+                    realizes the monitor&ndash;halt&ndash;recover loop through three design choices:
+                </p>
+                <ul class="approach-steps">
+                    <li><strong>Asynchronous tools.</strong> Robot motion runs independent of the agent's reasoning, so
+                        the agent interleaves monitoring with execution rather than blocking.</li>
+                    <li><strong>Fast and slow memory.</strong> A short monitor context (current observation, active
+                        subgoal, recent decisions) read close to the motion timescale (0.2&nbsp;Hz), and a fuller
+                        deliberation context (task memory, scene history, tool catalog) consulted only at planning
+                        points.</li>
+                    <li><strong>Safety-aware idling.</strong> Holding the robot still when reasoning must continue
+                        mid-task.</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <p>A key emergent property is <strong>complementarity</strong>: action primitives inject perception
+                    grounding into the VLA, so even a failed grasp leaves the gripper near the target with a clean view
+                    for the VLA to finish the pick.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="results">
+        <div class="container">
+            <h2>Main Results</h2>
+            <div class="table-responsive">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th class="suite-th" rowspan="2">Suite</th>
+                            <th class="suite-th" rowspan="2">Category</th>
+                            <th colspan="5">Single action model</th>
+                            <th colspan="2">Code-as-policy</th>
+                            <th rowspan="2">TiPToP<br><small>(TAMP)</small></th>
+                            <th colspan="3">VoLoAgent (Ours)</th>
+                        </tr>
+                        <tr>
+                            <th>&pi;<sub>0.5</sub></th>
+                            <th>&pi;<sub>0</sub>-FAST</th>
+                            <th>MolmoBot</th>
+                            <th>MolmoAct2</th>
+                            <th>DreamZero</th>
+                            <th>CaP-X-s</th>
+                            <th>CaP-X-e</th>
+                            <th>No VLA</th>
+                            <th>Only VLA</th>
+                            <th>Full</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Common Sense -->
+                        <tr>
+                            <td class="suite-cell" rowspan="5">Common<br>Sense</td>
+                            <td class="suite-cell">Infer</td>
+                            <td>0.00</td><td>9.52</td><td>14.29</td><td>0.00</td><td class="underline">19.05</td><td>9.52</td><td>14.29</td><td>4.76</td><td class="underline">19.05</td><td class="bold">52.38</td><td class="ours-col bold">52.38</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Kit</td>
+                            <td>16.67</td><td>4.17</td><td>0.00</td><td>0.00</td><td>12.50</td><td>12.50</td><td>16.67</td><td>8.33</td><td class="underline">41.67</td><td>33.33</td><td class="ours-col bold">50.00</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Recover</td>
+                            <td>4.17</td><td>0.00</td><td>12.50</td><td>12.50</td><td>20.83</td><td>37.50</td><td>29.17</td><td>0.00</td><td class="bold">62.50</td><td class="underline">45.83</td><td class="ours-col bold">62.50</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Sort</td>
+                            <td>23.81</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td class="underline">47.62</td><td class="ours-col bold">52.38</td>
+                        </tr>
+                        <tr class="overall-row">
+                            <td class="suite-cell">Overall</td>
+                            <td>11.11</td><td>3.33</td><td>6.67</td><td>3.33</td><td>13.33</td><td>15.56</td><td>15.56</td><td>3.33</td><td>32.22</td><td class="underline">44.44</td><td class="ours-col bold">54.44</td>
+                        </tr>
+
+                        <!-- Memory -->
+                        <tr>
+                            <td class="suite-cell" rowspan="4">Memory</td>
+                            <td class="suite-cell">Order</td>
+                            <td>12.50</td><td>25.00</td><td class="underline">33.33</td><td>25.00</td><td>29.17</td><td>16.67</td><td>16.67</td><td>0.00</td><td>25.00</td><td>29.17</td><td class="ours-col bold">54.17</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Recall</td>
+                            <td>23.33</td><td>3.33</td><td>30.00</td><td>3.33</td><td>21.43</td><td>23.33</td><td>23.33</td><td>3.33</td><td>6.67</td><td class="bold">63.33</td><td class="ours-col underline">56.67</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Swap</td>
+                            <td>3.33</td><td>0.00</td><td class="underline">6.67</td><td>3.33</td><td>0.00</td><td class="underline">6.67</td><td class="underline">6.67</td><td>0.00</td><td class="bold">10.00</td><td class="bold">10.00</td><td class="ours-col">3.33</td>
+                        </tr>
+                        <tr class="overall-row">
+                            <td class="suite-cell">Overall</td>
+                            <td>13.10</td><td>8.33</td><td>22.62</td><td>9.52</td><td>15.85</td><td>15.48</td><td>15.48</td><td>1.19</td><td>13.10</td><td class="underline">34.52</td><td class="ours-col bold">36.90</td>
+                        </tr>
+
+                        <!-- Complex References -->
+                        <tr>
+                            <td class="suite-cell" rowspan="5">Complex<br>References</td>
+                            <td class="suite-cell">Spatial</td>
+                            <td>14.81</td><td>11.11</td><td>0.00</td><td>7.41</td><td>11.11</td><td>7.41</td><td>7.41</td><td>25.93</td><td>7.41</td><td class="underline">29.63</td><td class="ours-col bold">40.74</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Counting</td>
+                            <td>16.67</td><td>12.50</td><td>12.50</td><td>0.00</td><td>0.00</td><td>4.17</td><td>4.17</td><td>12.50</td><td>4.17</td><td class="underline">45.83</td><td class="ours-col bold">54.17</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Negation</td>
+                            <td>16.67</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>20.83</td><td>25.00</td><td class="underline">45.83</td><td class="ours-col bold">54.17</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Size+Sort</td>
+                            <td>19.05</td><td>4.76</td><td>9.52</td><td>0.00</td><td>4.76</td><td>19.05</td><td>19.05</td><td>23.81</td><td>0.00</td><td class="underline">42.86</td><td class="ours-col bold">57.14</td>
+                        </tr>
+                        <tr class="overall-row">
+                            <td class="suite-cell">Overall</td>
+                            <td>16.67</td><td>7.29</td><td>5.21</td><td>2.08</td><td>4.17</td><td>7.29</td><td>7.29</td><td>20.83</td><td>9.38</td><td class="underline">40.62</td><td class="ours-col bold">51.04</td>
+                        </tr>
+
+                        <!-- World Knowledge -->
+                        <tr>
+                            <td class="suite-cell" rowspan="5">World<br>Knowledge</td>
+                            <td class="suite-cell">Art</td>
+                            <td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td class="bold">16.67</td><td class="bold">16.67</td><td>4.17</td><td class="ours-col underline">8.33</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Chem</td>
+                            <td>8.33</td><td>0.00</td><td>12.50</td><td>4.17</td><td>12.50</td><td>4.17</td><td>4.17</td><td class="underline">50.00</td><td>29.17</td><td>41.67</td><td class="ours-col bold">54.17</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Math</td>
+                            <td>4.17</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td><td>4.17</td><td class="bold">20.83</td><td>0.00</td><td class="ours-col underline">12.50</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Recycle</td>
+                            <td class="underline">25.00</td><td>0.00</td><td>4.17</td><td>0.00</td><td>0.00</td><td>4.17</td><td>4.17</td><td>20.83</td><td>0.00</td><td class="bold">37.50</td><td class="ours-col underline">25.00</td>
+                        </tr>
+                        <tr class="overall-row">
+                            <td class="suite-cell">Overall</td>
+                            <td>9.38</td><td>0.00</td><td>4.17</td><td>1.04</td><td>3.12</td><td>2.08</td><td>2.08</td><td class="underline">22.92</td><td>16.67</td><td>20.83</td><td class="ours-col bold">25.00</td>
+                        </tr>
+
+                        <!-- Robolab-Vague -->
+                        <tr>
+                            <td class="suite-cell" rowspan="4">Robolab-<br>Vague</td>
+                            <td class="suite-cell">Easy</td>
+                            <td>19.79</td><td>10.94</td><td>13.76</td><td>6.25</td><td>19.79</td><td>16.67</td><td>15.10</td><td>29.69</td><td>19.79</td><td class="bold">35.94</td><td class="ours-col underline">34.90</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Med</td>
+                            <td>17.54</td><td>11.40</td><td>11.40</td><td>6.14</td><td>18.80</td><td>14.04</td><td>9.65</td><td>7.02</td><td>16.67</td><td class="underline">26.32</td><td class="ours-col bold">30.70</td>
+                        </tr>
+                        <tr>
+                            <td class="suite-cell">Hard</td>
+                            <td>5.56</td><td>3.70</td><td>3.77</td><td>0.00</td><td>13.73</td><td>7.41</td><td>1.85</td><td>5.56</td><td>12.96</td><td class="underline">16.67</td><td class="ours-col bold">24.07</td>
+                        </tr>
+                        <tr class="overall-row">
+                            <td class="suite-cell">Overall</td>
+                            <td>16.94</td><td>10.00</td><td>11.52</td><td>5.28</td><td>18.61</td><td>14.44</td><td>11.39</td><td>18.89</td><td>17.78</td><td class="underline">30.00</td><td class="ours-col bold">31.94</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="caption">Results of various methods on RoboVoLo and the Robolab-Vague benchmark. All values are
+                success rate (%, higher is better). Each task is run for 3 episodes. <strong>Bold</strong> = best in
+                row; <u>underline</u> = second-best. VoLoAgent (Full) achieves the best long-horizon open-vocabulary
+                manipulation performance, outperforming single-model, code-as-policy, and TAMP baselines on every
+                suite.</p>
+        </div>
+    </section>
+
+    <section class="figure-section">
+        <div class="container">
+            <h2>Process Comparison</h2>
+            <img src="assets/process_comparison.png" alt="Process comparison across systems" class="full-img">
+            <p class="caption">Process comparison on two open-vocabulary long-horizon tasks, one row per system. Red
+                tags mark failure events; green tags mark grasp-tool recovery events. When the VLA selects the wrong
+                object, the grasp tool repositions the gripper on the correct target, and the VLA completes the
+                contact-rich manipulation.</p>
+        </div>
+    </section>
+
+    <section class="figure-section">
+        <div class="container">
+            <h2>Failure Mode Analysis</h2>
+            <img src="assets/robot_failure.png" alt="World failure analysis" class="full-img">
+            <p class="caption"><strong>World failure analysis</strong> tracing episodes through failures, recovery, and
+                outcomes for &pi;<sub>0.5</sub> (left) and VoLoAgent (right). VoLoAgent has 5&times; more failure-free
+                episodes (20 vs. 4) and recovers from 54% (38/70) of failures vs. only 13% (11/86) for
+                &pi;<sub>0.5</sub>. Major failure subtypes: stuck, WOP = wrong object picked, WTP = wrong target place.</p>
+            <img src="assets/vlm_failure.png" alt="VLM failure audit" class="full-img" style="margin-top:32px;">
+            <p class="caption"><strong>VLM failure audit.</strong> Left: one example per failure type (Planning,
+                Completion-monitor, Failure-monitor, Tool-use). Right: per-VLM error counts across n=90 episodes.
+                Completion-monitor errors dominate every backend; Claude Opus 4.6 reaches only 5% of the ceiling error
+                count vs. 23% for Qwen3-VL-8B.</p>
+        </div>
+    </section>
+
+    <section class="figure-section">
+        <div class="container">
+            <h2>Real-World Robot Validation</h2>
+            <img src="assets/real_robot.png" alt="Real robot examples" class="full-img">
+            <p class="caption"><strong>Real robot examples.</strong> Deployed on a real Franka FR3, VoLoAgent achieves
+                <strong>42.9%</strong> success vs. <strong>14.3%</strong> for &pi;<sub>0.5</sub> across 14 RoboVoLo
+                tasks (3 trials each), a 3&times; improvement. The agent monitors and recovers from failures such as
+                wrong-place destination and wrong-object pick in the real world as well.</p>
+        </div>
+    </section>
+
+    <section class="citation">
+        <div class="container">
+            <h2>Citation</h2>
+            <div class="citation-block">
+                <pre><code>@article{chen2026volo,
+    title   = {VoLo: A Physical Orchestrator for Open-Vocabulary Long-Horizon Manipulation},
+    author  = {Chen, Siyi and Hadfield, Hugo and Zook, Alex and Uy, Mikaela Angelina and
+               Song, Chan Hee and Coumans, Erwin and Yang, Xuning and Ladhak, Faisal and
+               Qu, Qing and Birchfield, Stan and Tremblay, Jonathan and Blukis, Valts},
+    journal = {arXiv preprint},
+    year    = {2026}
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 NVIDIA. All rights reserved. &nbsp;|&nbsp; VoLo Project Page</p>
+        </div>
+    </footer>
+</body>
+
+</html>
