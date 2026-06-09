@@ -2,8 +2,10 @@
 
 Project website for **VoLo: A Physical Orchestrator for Open-Vocabulary Long-Horizon Manipulation**.
 
-A static site (plain HTML/CSS) styled with an NVIDIA-inspired theme. To deploy via GitHub Pages, push to a
-repository and enable Pages on the `main` branch (root).
+- **Live site:** https://chicychen.github.io/VoLo/
+- **Paper:** https://arxiv.org/abs/2606.07723
+
+A static site (plain HTML/CSS) styled with an NVIDIA-inspired theme. Deployed via GitHub Pages on the `main` branch (root).
 
 ## Local preview
 
