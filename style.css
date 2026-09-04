@@ -52,11 +52,20 @@ h1 .accent {
 }
 
 .venue {
-    font-size: 1.15rem;
+    display: inline-block;
+    font-size: 1.05rem;
     color: var(--accent-dark);
-    margin-bottom: 20px;
-    font-weight: 700;
-    letter-spacing: 0.01em;
+    background: var(--accent-soft);
+    border: 1px solid rgba(118, 185, 0, 0.35);
+    margin: 0 0 22px;
+    padding: 8px 18px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.venue strong {
+    font-weight: 800;
+    color: var(--accent-dark);
 }
 
 h2 {
